@@ -2,7 +2,7 @@ import pygame
 import model
 from eventmanager import *
 
-class GraphicalView(object):
+class GraphicalView:
     """
     Draws the model state onto the screen.
     """
@@ -65,6 +65,8 @@ class GraphicalView(object):
         self.screen.blit(somewords, (0, 0))
         # flip the display to show whatever we drew
         pygame.display.flip()
+        # limit the redraw speed to 30 frames per second
+        self.clock.tick(30)
             
     def initialize(self):
         """
@@ -75,8 +77,6 @@ class GraphicalView(object):
         pygame.font.init()
         pygame.display.set_caption('demo game')
         self.screen = pygame.display.set_mode((600, 60))
-        # limit the redraw speed to 30 frames per second
         self.clock = pygame.time.Clock()
-        self.clock.tick(30)
         self.smallfont = pygame.font.Font(None, 40)
         self.isinitialized = True

@@ -1,21 +1,17 @@
 import pygame
-#import model
 from eventmanager import *
 
-class Keyboard(object):
+class InputDevice:
     """
-    Handles keyboard input.
+    Handles keyboard and mouse input.
     """
 
-#    def __init__(self, evManager, model):
     def __init__(self, evManager):
         """
         evManager (EventManager): Allows posting messages to the event queue.
-        model (GameEngine): a strong reference to the game Model.
         """
         self.evManager = evManager
         evManager.RegisterListener(self)
-#        self.model = model
 
     def notify(self, event):
         """
@@ -23,15 +19,23 @@ class Keyboard(object):
         """
 
         if isinstance(event, TickEvent):
-            # Called for each game tick. We check our keyboard presses here.
-            for event in pygame.event.get():
+            # Called for each game tick. We check our keyboard/mouse presses here.
+            for current_event in pygame.event.get():
                 # handle window manager closing our window
-                if event.type == pygame.QUIT:
+                if current_event.type == pygame.QUIT:
                     self.evManager.Post(QuitEvent())
                 # handle key down events
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                if current_event.type == pygame.KEYDOWN:
+                    if current_event.key == pygame.K_ESCAPE:
                         self.evManager.Post(QuitEvent())
                     else:
                         # post any other keys to the message queue for everyone else to see
-                        self.evManager.Post(InputEvent(event.unicode, None))
+                        self.evManager.Post(InputEvent(current_event.unicode, None, None))
+                # handle key up events
+                if current_event.type == pygame.KEYUP:
+                    # post that key was up to the message queue for everyone else to see
+                    self.evManager.Post(InputEvent(None, None, None))
+                # handle mousebuttondown events
+                if current_event.type == pygame.MOUSEBUTTONDOWN:
+                    # post that mouse button was klicked to the message queue for everyone else to see
+                    self.evManager.Post(InputEvent(None, pygame.mouse.get_pos(), pygame.mouse.get_pressed()))

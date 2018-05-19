@@ -1,7 +1,7 @@
 import pygame
 from eventmanager import *
 
-class GameEngine(object):
+class GameEngine:
     """
     Tracks the game state.
     """
@@ -25,6 +25,8 @@ class GameEngine(object):
 
         if isinstance(event, QuitEvent):
             self.running = False
+        elif isinstance(event, InitializeEvent):
+            self.running = True
         elif isinstance(event, InputEvent):
             self.currentKey = event.char
 
@@ -34,7 +36,6 @@ class GameEngine(object):
         This pumps a Tick event into the message queue for each loop.
         The loop ends when this object hears a QuitEvent in notify(). 
         """
-        self.running = True
         self.evManager.Post(InitializeEvent())
         newTick = TickEvent()
         while self.running:
